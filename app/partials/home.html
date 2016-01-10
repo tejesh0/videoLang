@@ -1,0 +1,19 @@
+<div class="container">
+
+  <div id="searchContainer">
+    <form>
+      <input id="field" name="youtubeurl" ng-model="dynamic.video" type="text" />
+      <div id="delete"><span id="x">x</span></div>
+      <input id="submit" name="submit" type="submit"  value="Search" />
+    </form>
+  </div>
+
+  <div class="embed-responsive embed-responsive-16by9 video-wrapper">
+    <youtube-video class="embed-responsive-item" video-url="dynamic.video"></youtube-video>
+  </div>
+
+  <footer>
+    <a href="#" class="border-button">Didnt find translatiom for your video, contact us!</a>
+    <a href="#" class="view-advanced">Watch most viewed and popular videos.</a>
+  </footer>
+</div>

@@ -1,0 +1,26 @@
+{
+  "name": "-",
+  "version": "0.0.0",
+  "authors": [
+    "tejesh95 <tejeshpapineni95@gmail.com>"
+  ],
+  "description": "bower for django-angularjs app",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "app/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.8",
+    "angular-animate": "~1.4.8",
+    "angular-route": "~1.4.8",
+    "jquery": "~2.2.0",
+    "animate.css": "~3.5.1",
+    "bootstrap": "~3.3.6",
+    "font-awesome": "fontawesome#~4.5.0",
+    "angular-youtube-mb": "~1.1.1"
+  }
+}
