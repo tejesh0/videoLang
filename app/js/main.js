@@ -1,5 +1,5 @@
 // Create your app with 'youtube-embed' dependency
-var myApp = angular.module('myApp', ['youtube-embed', 'ngRoute', 'hljs']);
+var myApp = angular.module('myApp', ['youtube-embed', 'ngRoute', 'ngAnimate', 'ngMessages']);
 
 myApp.config(['$routeProvider', function($routeProvider) {
   $routeProvider
@@ -7,9 +7,9 @@ myApp.config(['$routeProvider', function($routeProvider) {
     templateUrl: 'partials/home.html',
     controller: 'TheCtrl'
   })
-  .when('/advanced', {
-    templateUrl: 'partials/advanced.html',
-    controller: 'AdvancedCtrl'
+  .when('/signup', {
+    templateUrl: 'partials/signup.html',
+    controller: 'SignUpController'
   })
   .otherwise('/');
 }]).run(function ($rootScope, $window) {
@@ -18,72 +18,57 @@ myApp.config(['$routeProvider', function($routeProvider) {
   });
 });
 
-// Inside your controller...
 myApp.controller('TheCtrl', function ($scope) {
-    // have a video ID
-    // $scope.theBestVideo = 'sMKoNBRZM1M';
 
-    // or a URL
-    // $scope.video = {};
-
-    // $scope.dynamic = {
-    //     video = $scope.video.url;
-    // } 
 });
 
-// myApp.controller('AdvancedCtrl', function ($scope) {
+myApp.controller('SignUpController', function () {
 
-//     $scope.specifiedTime = {
-//         url: 'https://www.youtube.com/watch?v=Im4TO03CuF8#t=10s',
-//         player: null
-//     };
+        var ctrl = this,
+            newCustomer = { email:'', userName:'', password:'' };
 
-//     $scope.looper = {
-//         video: 'u2-ZGCoKh-I',
-//         player: null
-//     };
+        var signup = function () {
+            if( ctrl.signupForm.$valid) {
+                ctrl.showSubmittedPrompt = true;
+                clearForm();
+            }
+        };
 
-//     $scope.$on('youtube.player.ended', function ($event, player) {
-//         if (player === $scope.looper.player) {
-//             player.playVideo();
-//         }
-//     });
+        var clearForm = function () {
+            ctrl.newCustomer = { email:'', userName:'', password:'' }
+            ctrl.signupForm.$setUntouched();
+            ctrl.signupForm.$setPristine();
+        };
 
-//     $scope.custom = {
-//         video: 'FGXDKrUoVrw',
-//         player: null,
-//         vars: {
-//             controls: 0
-//         }
-//     };
+        var getPasswordType = function () {
+            return ctrl.signupForm.showPassword ? 'text' : 'password';
+        };
 
-//     $scope.conditional = {
-//         video: '-m-vVKHideI',
-//         visible: false,
-//         toggle: function () {
-//             this.visible = !this.visible;
-//         },
-//         vars: {
-//             autoplay: 1
-//         }
-//     };
+        var toggleEmailPrompt = function (value) {
+            ctrl.showEmailPrompt = value;
+        };
 
-//     $scope.playlist = {
-//         vars: {
-//             list: 'PLISo53ifQd_iBPpybJay-SCAULHsoRicc'
-//         }
-//     };
+        var toggleUsernamePrompt = function (value) {
+            ctrl.showUsernamePrompt = value;
+        };
 
-//     var first = 'biZLZZFb468';
-//     var second = 'lbVdyPZiOLM';
-//     $scope.dynamic = {
-//         video: first,
-//         change: function () {
-//             if ($scope.dynamic.video === first) {
-//                 $scope.dynamic.video = second;
-//             } else {
-//                 $scope.dynamic.video = first;
-//             }
-//         }
-//     };
-// });
+        var hasErrorClass = function (field) {
+            return ctrl.signupForm[field].$touched && ctrl.signupForm[field].$invalid;
+        };
+
+        var showMessages = function (field) {
+            return ctrl.signupForm[field].$touched || ctrl.signupForm.$submitted
+        };
+
+        ctrl.showEmailPrompt = false;
+        ctrl.showUsernamePrompt = false;
+        ctrl.showSubmittedPrompt = false;
+        ctrl.toggleEmailPrompt = toggleEmailPrompt;
+        ctrl.toggleUsernamePrompt = toggleUsernamePrompt;
+        ctrl.getPasswordType = getPasswordType;
+        ctrl.hasErrorClass = hasErrorClass;
+        ctrl.showMessages = showMessages;
+        ctrl.newCustomer = newCustomer;
+        ctrl.signup = signup;
+        ctrl.clearForm = clearForm;
+    })
