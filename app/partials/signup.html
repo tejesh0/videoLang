@@ -1,7 +1,9 @@
 <div>
-  <h1>rfgdfGD</h1>
+  <h1>SignUp to turbo-charge your experience.</h1>
   <form ng-submit="signup()">
-      <input type="username" ng-model="signup.username" name="registerUsername">
+      <input type="text" ng-model="signup.first_name" name="registerFirstName">  
+      <input type="text" ng-model="signup.last_name" name="registerLastName">
+      <input type="text" ng-model="signup.username" name="registerUserName">
       <input type="email" ng-model="signup.email" name="registerEmail">
       <input type="password" ng-model="signup.password" name="registerPassword">
       <input type="submit" value="SignUp">

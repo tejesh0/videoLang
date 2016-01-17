@@ -17,22 +17,34 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locatio
         .state('signup', {
             url: '/signup',
             templateUrl: 'partials/signup.html',
-            controller: function($scope, $http){
+            controller: function($scope, $http, $window){
                 $scope.signup = function() {
-
                     //debugger;
-                    $http.post(
-                    API_SERVER+'signup',
-                    JSON.stringify({ username: $scope.username, email: $scope.email, password: $scope.password })
-                    ).success(
-                        function(data) {
-                          alert('LoginController submit success');
-                          //debugger;
-                          $.cookie('username', data.username, { expires: 7 });
-                          $.cookie('key', data.key, { expires: 7 });
-                          $http.defaults.headers.common['Authorization'] = 'ApiKey ' +
-                            data.username + ':' + data.key;
-                          authService.loginConfirmed();
+                    $http({
+                        method: 'POST',
+                        url: 'http://127.0.0.1:8000/signup',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                        data: $scope.signup,
+                        transformRequest: function(obj) {
+                            var str = [];
+                            for(var p in obj)
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                            return str.join("&");
+                        }   
+                    }).success(
+                        function(response) {
+                            console.log("success", response);
+                            var token = response.data.token;
+                            var username = response.data.username;
+
+                            if (token && username) {
+                              $window.localStorage.token = token;
+                              $window.localStorage.username = username;
+                              deferred.resolve(true);
+                            } else {
+                              console.log('Invalid data received from server');
+                            }
+      
                         }
                     ).error(
                     function(data) {
