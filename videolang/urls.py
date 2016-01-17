@@ -1,13 +1,15 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-import auth
+from django.views.decorators.csrf import csrf_exempt
+import video.api
+
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'videolang.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
+                       # Examples:
+                       # url(r'^$', 'videolang.views.home', name='home'),
+                       # url(r'^blog/', include('blog.urls')),
 
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^auth/', include('auth.urls')),
-
-)
+                       url(r'^admin/', include(admin.site.urls)),
+                       url(r'^api-token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
+                       url(r'^signup', csrf_exempt(video.api.CreateUserView.as_view())),
+                       )

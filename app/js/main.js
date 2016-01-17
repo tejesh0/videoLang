@@ -1,4 +1,4 @@
-var myApp = angular.module('myApp', ['ui.router', 'youtube-embed', 'ngAnimate', 'ngMessages']);
+var myApp = angular.module('myApp', ['ui.router', 'youtube-embed', 'ngAnimate', 'ngMessages', 'ngCookies', 'ngSanitize', 'ngResource']);
 
 myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider) {
   
@@ -22,7 +22,7 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locatio
 
                     //debugger;
                     $http.post(
-                    'http://localhost:8000/auth/signup/',
+                    API_SERVER+'signup',
                     JSON.stringify({ username: $scope.username, email: $scope.email, password: $scope.password })
                     ).success(
                         function(data) {
@@ -63,7 +63,7 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locatio
     $httpProvider.defaults.xsrfCookieName = 'csrftoken';
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
 
-    $locationProvider.html5Mode(true);
+    // $locationProvider.html5Mode(true);
 }]);
 
 myApp.run(function($rootScope){
@@ -72,10 +72,4 @@ myApp.run(function($rootScope){
     });
 });
 
-
-myApp.controller('homeCtrl', ['$scope', '$http', function($scope, $http) {
-
-
-    
-
-}])
+myApp.constant('API_SERVER', 'http://127.0.0.1:8000/');

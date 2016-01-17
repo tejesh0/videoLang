@@ -23,6 +23,9 @@
     "font-awesome": "fontawesome#~4.5.0",
     "angular-youtube-mb": "~1.1.1",
     "angular-messages": "~1.4.8",
-    "angular-ui-router": "~0.2.15"
+    "angular-ui-router": "~0.2.15",
+    "angular-cookies": "~1.4.8",
+    "angular-sanitize": "~1.4.8",
+    "angular-resource": "~1.4.8"
   }
 }
