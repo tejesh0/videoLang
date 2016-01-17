@@ -1,74 +1,81 @@
-// Create your app with 'youtube-embed' dependency
-var myApp = angular.module('myApp', ['youtube-embed', 'ngRoute', 'ngAnimate', 'ngMessages']);
+var myApp = angular.module('myApp', ['ui.router', 'youtube-embed', 'ngAnimate', 'ngMessages']);
 
-myApp.config(['$routeProvider', function($routeProvider) {
-  $routeProvider
-   .when('/', {
-    templateUrl: 'partials/home.html',
-    controller: 'TheCtrl'
-  })
-  .when('/signup', {
-    templateUrl: 'partials/signup.html',
-    controller: 'SignUpController'
-  })
-  .otherwise('/');
-}]).run(function ($rootScope, $window) {
-  $rootScope.$on('$routeChangeSuccess', function () {
-    $window.scrollTo(0, 0);
-  });
-});
+myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider) {
+  
+    $urlRouterProvider.otherwise("/");
+    $stateProvider
+        .state('home', {
+            url: '/',
+            templateUrl: 'partials/home.html',
+            controller: function($scope, $http, $state){
 
-myApp.controller('TheCtrl', function ($scope) {
-
-});
-
-myApp.controller('SignUpController', function () {
-
-        var ctrl = this,
-            newCustomer = { email:'', userName:'', password:'' };
-
-        var signup = function () {
-            if( ctrl.signupForm.$valid) {
-                ctrl.showSubmittedPrompt = true;
-                clearForm();
+                $scope.signuppage = function(){
+                    $state.go('signup');
+                }
             }
-        };
+        })
+        .state('signup', {
+            url: '/signup',
+            templateUrl: 'partials/signup.html',
+            controller: function($scope, $http){
+                $scope.signup = function() {
 
-        var clearForm = function () {
-            ctrl.newCustomer = { email:'', userName:'', password:'' }
-            ctrl.signupForm.$setUntouched();
-            ctrl.signupForm.$setPristine();
-        };
+                    //debugger;
+                    $http.post(
+                    'http://localhost:8000/auth/signup/',
+                    JSON.stringify({ username: $scope.username, email: $scope.email, password: $scope.password })
+                    ).success(
+                        function(data) {
+                          alert('LoginController submit success');
+                          //debugger;
+                          $.cookie('username', data.username, { expires: 7 });
+                          $.cookie('key', data.key, { expires: 7 });
+                          $http.defaults.headers.common['Authorization'] = 'ApiKey ' +
+                            data.username + ':' + data.key;
+                          authService.loginConfirmed();
+                        }
+                    ).error(
+                    function(data) {
+                      alert('LoginController submit error');
+                      $scope.errorMsg = data.reason;
+                      //debugger;
+                    }
+                    );
+                    };
 
-        var getPasswordType = function () {
-            return ctrl.signupForm.showPassword ? 'text' : 'password';
-        };
 
-        var toggleEmailPrompt = function (value) {
-            ctrl.showEmailPrompt = value;
-        };
+                    $scope.logout = function() {
+                    $http.post('http://localhost:8000/auth/logout/').success(function() {
+                        $scope.restrictedContent = [];
+                        $.cookie('key', null);
+                        $http.defaults.headers.common['Authorization'] = null;
+                        }).error(function() {
+                        // This should happen after the .post call either way.
+                        $.cookie('key', null);
+                        $http.defaults.headers.common['Authorization'] = null;
+                        });
+                    };
 
-        var toggleUsernamePrompt = function (value) {
-            ctrl.showUsernamePrompt = value;
-        };
+            }
+        })
 
-        var hasErrorClass = function (field) {
-            return ctrl.signupForm[field].$touched && ctrl.signupForm[field].$invalid;
-        };
+    $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
 
-        var showMessages = function (field) {
-            return ctrl.signupForm[field].$touched || ctrl.signupForm.$submitted
-        };
+    $locationProvider.html5Mode(true);
+}]);
 
-        ctrl.showEmailPrompt = false;
-        ctrl.showUsernamePrompt = false;
-        ctrl.showSubmittedPrompt = false;
-        ctrl.toggleEmailPrompt = toggleEmailPrompt;
-        ctrl.toggleUsernamePrompt = toggleUsernamePrompt;
-        ctrl.getPasswordType = getPasswordType;
-        ctrl.hasErrorClass = hasErrorClass;
-        ctrl.showMessages = showMessages;
-        ctrl.newCustomer = newCustomer;
-        ctrl.signup = signup;
-        ctrl.clearForm = clearForm;
-    })
+myApp.run(function($rootScope){
+    $rootScope.$on('$stateChangeSuccess', function() {
+       document.body.scrollTop = document.documentElement.scrollTop = 0;
+    });
+});
+
+
+myApp.controller('homeCtrl', ['$scope', '$http', function($scope, $http) {
+
+
+    
+
+}])

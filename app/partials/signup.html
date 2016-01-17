@@ -1,47 +1,9 @@
-<div class="my-messages">
-    <div class="prompt message-animation" ng-if="ctrl.showEmailPrompt">
-        What's your email address?
-    </div>
-</div>
-
-<input id="email" name="email" 
-   class="form-control" type="email" required
-   ng-model="ctrl.newCustomer.email" 
-   ng-model-options="{ updateOn : 'default blur' }"
-   ng-focus="ctrl.toggleEmailPrompt(true)" 
-   ng-blur="ctrl.toggleEmailPrompt(false)"/>
-
-<div class="my-messages">
-    <div class="prompt message-animation" ng-if="ctrl.showEmailPrompt">
-        What's your email address?
-    </div>
-</div>
-
-<div class="input-group">
-    <input id="password" name="password" class="form-control" required
-          type="{{ctrl.getPasswordType()}}"
-          ng-model-options="{ updateOn : 'default blur' }"
-          ng-model="ctrl.newCustomer.password"/>
-    <span class="input-group-addon">
-        <input type="checkbox" ng-model="ctrl.signupForm.showPassword"> Show
-    </span>
-</div>
-
-<div class="my-messages" 
-   ng-messages="ctrl.signupForm.email.$error" 
-   ng-if="ctrl.showMessages('email')">
-</div>
-
-<div class="my-messages" 
-   ng-messages="ctrl.signupForm.email.$error" 
-   ng-if="ctrl.showMessages('email')">
-    <div class="message-animation" ng-message="required">
-        <strong>This field is required.</strong>
-    </div>
-    <div class="message-animation" ng-message="email">
-        <strong>Please format your email correctly.</strong>
-    </div>
-</div>
-
-<div class="form-group" ng-class="{'has-error':ctrl.hasErrorClass('email')}">
+<div>
+  <h1>rfgdfGD</h1>
+  <form ng-submit="signup()">
+      <input type="username" ng-model="signup.username" name="registerUsername">
+      <input type="email" ng-model="signup.email" name="registerEmail">
+      <input type="password" ng-model="signup.password" name="registerPassword">
+      <input type="submit" value="SignUp">
+  </form>
 </div>
