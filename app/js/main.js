@@ -1,4 +1,4 @@
-var myApp = angular.module('myApp', ['ui.router', 'youtube-embed', 'ngAnimate', 'ngMessages', 'ngCookies', 'ngSanitize', 'ngResource']);
+var myApp = angular.module('myApp', ['ui.router', 'youtube-embed', 'ngAnimate', 'ngMessages', 'ngCookies', 'ngSanitize', 'ngResource', 'ngFileUpload']);
 
 myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider) {
   
@@ -12,6 +12,9 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locatio
                 $scope.signuppage = function(){
                     $state.go('signup');
                 }
+
+
+
             }
         })
         .state('signup', {
@@ -71,12 +74,50 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locatio
             }
         })
 
+    $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
     $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     $httpProvider.defaults.xsrfCookieName = 'csrftoken';
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
 
     // $locationProvider.html5Mode(true);
-}]);
+}])
+
+myApp.controller('HomeCtrl', ['$scope', '$http', 'Upload', function($scope, $http, Upload){
+                    // upload later on form submit or something similar
+                $scope.submit = function() {
+                  if ($scope.file) {
+                    $scope.upload($scope.file);
+                  }
+                };
+
+              
+                // upload on file select or drop
+                $scope.upload = function (file) {
+                    // Upload.upload({
+                    //     url: 'http://127.0.0.1:8000/upload-video',
+                    //     method: 'POST',
+                    //     data: file
+
+                    // })
+
+                    Upload.http({
+                          url: 'http://127.0.0.1:8000/upload-video',
+                          headers : {
+                            'Content-Type': file.type
+                          },
+                          data: file
+                        })
+
+                    .then(function (resp) {
+                        console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
+                    }, function (resp) {
+                        console.log('Error status: ' + resp.status);
+                    }, function (evt) {
+                        // var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                        // console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                    });
+                };
+}])
 
 myApp.run(function($rootScope){
     $rootScope.$on('$stateChangeSuccess', function() {

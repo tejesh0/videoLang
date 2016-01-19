@@ -1,5 +1,26 @@
 <div class="container">
 
+  <div ng-click="">
+  <a>Upload Video</a>
+
+        Upload on form submit or button click
+        <form ng-app="fileUpload"  name="form">
+          Single Image with validations
+          <div class="button" ngf-select ng-model="file" name="file" ngf-pattern="'video/*'"
+            ngf-accept="'video/*'" ngf-max-size="200MB">Select</div>
+         
+          <button type="submit" ng-click="submit()">submit</button>
+        </form>
+
+        Upload right away after file selection:
+        <div class="button" ngf-select="upload($file)">Upload on file select</div>
+
+        Video preview: <video controls ngf-src="file"></video>
+
+  </div>
+  <br>
+  <br>
+  <br>
   <div id="searchContainer">
     <form>
       <input id="field" name="youtubeurl" ng-model="dynamic.video" type="text" />
