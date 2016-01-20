@@ -15,7 +15,9 @@ def list(request):
         print "inside POST ", request.POST
         print "files", request.FILES
         form = DocumentForm(request.POST, request.FILES)
+        print "form is ", form
         if form.is_valid():
+            print "inside form valid"
             newdoc = Document(docfile=request.FILES['docfile'])
             newdoc.save()
 

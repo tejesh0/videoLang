@@ -37,6 +37,8 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locatio
                     }).success(
                         function(response) {
                             console.log("success", response);
+                            token_res = $http.post('http://127.0.0.1:8000/api-token-auth/', {'username':'rajesh', 'password':'tejeshtj'})
+                        console.log(token_res);
                             var token = response.data.token;
                             var username = response.data.username;
 
@@ -82,34 +84,41 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locatio
     // $locationProvider.html5Mode(true);
 }])
 
-myApp.controller('HomeCtrl', ['$scope', '$http', 'Upload', function($scope, $http, Upload){
+myApp.controller('HomeCtrl', ['$scope', '$http', 'Upload', '$rootScope', function($scope, $http, Upload, $rootScope){
+
+                $scope.test = function(){
+                    console.log('fdfds');
                     // upload later on form submit or something similar
-                $scope.submit = function() {
-                  if ($scope.file) {
-                    $scope.upload($scope.file);
+                }
+                $scope.submit = function(file) {
+                    console.log('inside submit', file)
+                  if (file) {
+                    $scope.upload(file);
                   }
                 };
 
               
                 // upload on file select or drop
                 $scope.upload = function (file) {
-                    // Upload.upload({
-                    //     url: 'http://127.0.0.1:8000/upload-video',
-                    //     method: 'POST',
-                    //     data: file
+                    console.log('upload is called ', file);
+                    Upload.upload({
+                        url: 'http://127.0.0.1:8000/upload-video',
+                        method: 'POST',
+                        data: {'tim':'tom', 'docfile':file},
 
-                    // })
+                    })
 
-                    Upload.http({
-                          url: 'http://127.0.0.1:8000/upload-video',
-                          headers : {
-                            'Content-Type': file.type
-                          },
-                          data: file
-                        })
+                    // Upload.http({
+                    //       url: 'http://127.0.0.1:8000/upload-video',
+                    //       headers : {
+                    //         'Content-Type': file.type
+                    //       },
+                    //       data: file
+                    //     })
 
                     .then(function (resp) {
-                        console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
+                        console.log('Success ', resp);
+
                     }, function (resp) {
                         console.log('Error status: ' + resp.status);
                     }, function (evt) {
