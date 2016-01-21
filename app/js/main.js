@@ -1,4 +1,4 @@
-var myApp = angular.module('myApp', ['ui.router', 'youtube-embed', 'ngAnimate', 'ngMessages', 'ngCookies', 'ngSanitize', 'ngResource', 'ngFileUpload']);
+var myApp = angular.module('myApp', ['ui.router', 'youtube-embed', 'ngAnimate', 'ngMessages', 'ngCookies', 'ngSanitize', 'ngResource', 'ngMaterial', 'ngFileUpload']);
 
 myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider) {
   
@@ -19,8 +19,20 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locatio
         })
         .state('signup', {
             url: '/signup',
-            templateUrl: 'partials/signup.html',
-            controller: function($scope, $http, $window){
+            templateUrl: 'partials/signup.html'
+
+        })
+
+    $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+    $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+
+    // $locationProvider.html5Mode(true);
+}])
+
+myApp.controller('HomeCtrl', ['$scope', '$http', 'Upload', '$window', function($scope, $http, Upload, $window){
+
                 $scope.signup = function() {
                     //debugger;
                     $http({
@@ -55,7 +67,6 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locatio
                     function(data) {
                       alert('LoginController submit error');
                       $scope.errorMsg = data.reason;
-                      //debugger;
                     }
                     );
                     };
@@ -73,23 +84,7 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locatio
                         });
                     };
 
-            }
-        })
 
-    $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-    $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
-    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-
-    // $locationProvider.html5Mode(true);
-}])
-
-myApp.controller('HomeCtrl', ['$scope', '$http', 'Upload', '$rootScope', function($scope, $http, Upload, $rootScope){
-
-                $scope.test = function(){
-                    console.log('fdfds');
-                    // upload later on form submit or something similar
-                }
                 $scope.submit = function(file) {
                     console.log('inside submit', file)
                   if (file) {
