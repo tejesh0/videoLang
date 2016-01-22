@@ -29,45 +29,92 @@
     <script src="bower_components/ng-file-upload/ng-file-upload.min.js"></script>
     <script src="bower_components/ng-file-upload/ng-file-upload-shim.min.js"></script>
     <script src="bower_components/angular-material/angular-material.min.js"></script>
+    <script src="bower_components/videogular/videogular.js"></script>
+    <script src="bower_components/videogular-controls/vg-controls.js"></script>
+    <script src="bower_components/videogular-overlay-play/vg-overlay-play.js"></script>
+    <script src="bower_components/videogular-poster/vg-poster.js"></script>
+    <script src="bower_components/videogular-buffering/vg-buffering.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="bower_components/angular-youtube-mb/dist/angular-youtube-embed.min.js"></script>
     <script src="js/main.js"></script>
     <base href="/"></base>
 
   </head>
-  <body ng-controller="HomeCtrl">
+  <body ng-controller="HomeCtrl" layout="column">
 
-      <div class="container">
-        <h1>VideoLang</h1>
-        <p>VideoLang helps you learn a language by watching videos.Super‑fast language acquisition while watching your favourite video.</p>
-      </div>
+      <!-- Container #1 (nav bar) -->
+    <md-toolbar layout="row" >
+        <h1 class="md-toolbar-tools" layout-align-gt-sm="center">vibasha</h1>
+        <p>vibasha helps you learn a language by watching videos</p>
+        <button ng-click="toggleSidenav('left')" hide-gt-sm class="menuBtn">
+            <span class="visually-hidden">Menu</span>
+        </button>
+    </md-toolbar>
 
-      <div layout="row" layout-padding class="bg-dark-blue nav-dark" layout-align="space-between center">
-        <div>
-            <md-button>Home</md-button>
-            <md-button>Item 1</md-button>
-            <md-button>Item 2</md-button>
-            <md-menu>
-                <md-button md-menu-origin ng-click="$mdOpenMenu()">Help</md-button>
-                <md-menu-content width="2">
-                    <md-menu-item>
-                        <md-button>Help</md-button>
-                    </md-menu-item>
-                    <md-menu-item>
-                        <md-button>About</md-button>
-                    </md-menu-item>
-                </md-menu-content>
-            </md-menu>
+
+
+    <!-- Container #2 (main body) -->
+    <div layout="row" flex>
+        <md-sidenav  class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')">
+            <md-list>
+                <md-list-item>
+                    <md-button ng-click="ul.selectUser(it)" ng-class="{'selected' : u === ul.selected }">
+                      <md-icon md-svg-icon="{{u.avatar}}" class="avatar"></md-icon>
+                      Account
+                    </md-button>
+                </md-list-item>
+                <md-list-item >
+                    <md-button ng-click="ul.selectUser(it)" ng-class="{'selected' : u === ul.selected }">
+                      <md-icon md-svg-icon="{{u.avatar}}" class="avatar"></md-icon>
+                      History
+                    </md-button>
+                </md-list-item>
+                <md-list-item >
+                    <md-button ng-click="ul.selectUser(it)" ng-class="{'selected' : u === ul.selected }">
+                      <md-icon md-svg-icon="{{u.avatar}}" class="avatar"></md-icon>
+                      Badges
+                    </md-button>
+                </md-list-item>
+            </md-list>
+        </md-sidenav>
+
+        <div  flex id="content">
+            <md-content layout="column" flex class="md-padding">
+                <videogular vg-theme="config.theme">
+                    <vg-media vg-src="config.sources"
+                            vg-tracks="config.tracks">
+                    </vg-media>
+                    <vg-controls>
+                        <vg-play-pause-button></vg-play-pause-button>
+                        <vg-time-display>{{ currentTime | date:'mm:ss' }}</vg-time-display>
+                        <vg-scrub-bar>
+                            <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+                        </vg-scrub-bar>
+                        <vg-time-display>{{ timeLeft | date:'mm:ss' }}</vg-time-display>
+                        <vg-volume>
+                            <vg-mute-button></vg-mute-button>
+                            <vg-volume-bar></vg-volume-bar>
+                        </vg-volume>
+                        <vg-fullscreen-button></vg-fullscreen-button>
+                    </vg-controls>
+                    <vg-overlay-play></vg-overlay-play>
+                    <vg-buffering></vg-buffering>
+                    <vg-poster vg-url='controller.config.plugins.poster'></vg-poster>
+                </videogular>
+            </md-content>
+            <md-content layout layout-wrap layout-padding layout-align="center">
+                <md-card flex class="card">
+                    <img ng-src="{{photo.path}}">
+                </md-card>
+                <md-card flex class="card">
+                    <img ng-src="{{photo.path}}">
+                </md-card>
+                <md-card flex class="card">
+                    <img ng-src="{{photo.path}}">
+                </md-card>
+            </md-content>
         </div>
-        <div class="nav-buttons">
-            <md-button class="md-raised md-accent">My profile</md-button>
-            <md-button class="md-raised md-warn">Log Out</md-button>
-        </div>
-
-
-    <div ui-view></div>
-
-
+    </div>
 
   </body>
 </html>

@@ -1,4 +1,4 @@
-var myApp = angular.module('myApp', ['ui.router', 'youtube-embed', 'ngAnimate', 'ngMessages', 'ngCookies', 'ngSanitize', 'ngResource', 'ngMaterial', 'ngFileUpload']);
+var myApp = angular.module('myApp', ['ui.router', 'youtube-embed', 'ngAnimate', 'ngMessages', 'ngCookies', 'ngSanitize', 'ngResource', 'ngMaterial', 'ngFileUpload', "com.2fdevs.videogular", "com.2fdevs.videogular.plugins.controls", "com.2fdevs.videogular.plugins.overlayplay", "com.2fdevs.videogular.plugins.buffering", "com.2fdevs.videogular.plugins.poster"]);
 
 myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider) {
   
@@ -31,102 +31,148 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locatio
     // $locationProvider.html5Mode(true);
 }])
 
-myApp.controller('HomeCtrl', ['$scope', '$http', 'Upload', '$window', function($scope, $http, Upload, $window){
+myApp.controller('HomeCtrl', ['$scope', '$http', 'Upload', '$window', '$mdSidenav', '$sce', function($scope, $http, Upload, $window, $mdSidenav, $sce){
 
-                $scope.signup = function() {
-                    //debugger;
-                    $http({
-                        method: 'POST',
-                        url: 'http://127.0.0.1:8000/signup',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                        data: $scope.signup,
-                        transformRequest: function(obj) {
-                            var str = [];
-                            for(var p in obj)
-                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                            return str.join("&");
-                        }   
-                    }).success(
-                        function(response) {
-                            console.log("success", response);
-                            token_res = $http.post('http://127.0.0.1:8000/api-token-auth/', {'username':'rajesh', 'password':'tejeshtj'})
-                        console.log(token_res);
-                            var token = response.data.token;
-                            var username = response.data.username;
-
-                            if (token && username) {
-                              $window.localStorage.token = token;
-                              $window.localStorage.username = username;
-                              deferred.resolve(true);
-                            } else {
-                              console.log('Invalid data received from server');
-                            }
-      
+    $scope.config = {
+                    sources: [
+                        {src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.mp4"), type: "video/mp4"},
+                        {src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.webm"), type: "video/webm"},
+                        {src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.ogg"), type: "video/ogg"}
+                    ],
+                    tracks: [
+                        {
+                            src: "http://www.videogular.com/assets/subs/pale-blue-dot.vtt",
+                            kind: "subtitles",
+                            srclang: "en",
+                            label: "English",
+                            default: ""
                         }
-                    ).error(
-                    function(data) {
-                      alert('LoginController submit error');
-                      $scope.errorMsg = data.reason;
+                    ],
+                    theme: "../bower_components/videogular-themes-default/videogular.css",
+                    plugins: {
+                        poster: "http://www.videogular.com/assets/images/videogular.png"
                     }
-                    );
-                    };
-
-
-                    $scope.logout = function() {
-                    $http.post('http://localhost:8000/auth/logout/').success(function() {
-                        $scope.restrictedContent = [];
-                        $.cookie('key', null);
-                        $http.defaults.headers.common['Authorization'] = null;
-                        }).error(function() {
-                        // This should happen after the .post call either way.
-                        $.cookie('key', null);
-                        $http.defaults.headers.common['Authorization'] = null;
-                        });
-                    };
-
-
-                $scope.submit = function(file) {
-                    console.log('inside submit', file)
-                  if (file) {
-                    $scope.upload(file);
-                  }
                 };
 
-              
-                // upload on file select or drop
-                $scope.upload = function (file) {
-                    console.log('upload is called ', file);
-                    Upload.upload({
-                        url: 'http://127.0.0.1:8000/upload-video',
-                        method: 'POST',
-                        data: {'tim':'tom', 'docfile':file},
+    $scope.toggleSidenav = function(menuId) {
+        $mdSidenav(menuId).toggle();
+    };
 
-                    })
+    $scope.photo = {};
+    $scope.photo.path = "http://www.videogular.com/assets/images/videogular.png"
 
-                    // Upload.http({
-                    //       url: 'http://127.0.0.1:8000/upload-video',
-                    //       headers : {
-                    //         'Content-Type': file.type
-                    //       },
-                    //       data: file
-                    //     })
+    $scope.signup = function() {
+        //debugger;
+        $http({
+            method: 'POST',
+            url: 'http://127.0.0.1:8000/signup',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+            data: $scope.signup,
+            transformRequest: function(obj) {
+                var str = [];
+                for(var p in obj)
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                return str.join("&");
+            }   
+        }).success(
+            function(response) {
+                console.log("success", response);
+                token_res = $http.post('http://127.0.0.1:8000/api-token-auth/', {'username':'rajesh', 'password':'tejeshtj'})
+            console.log(token_res);
+                var token = response.data.token;
+                var username = response.data.username;
 
-                    .then(function (resp) {
-                        console.log('Success ', resp);
+                if (token && username) {
+                  $window.localStorage.token = token;
+                  $window.localStorage.username = username;
+                  deferred.resolve(true);
+                } else {
+                  console.log('Invalid data received from server');
+                }
 
-                    }, function (resp) {
-                        console.log('Error status: ' + resp.status);
-                    }, function (evt) {
-                        // var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                        // console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-                    });
-                };
+            }
+        ).error(
+        function(data) {
+          alert('LoginController submit error');
+          $scope.errorMsg = data.reason;
+        }
+        );
+        };
+
+
+        $scope.logout = function() {
+        $http.post('http://localhost:8000/auth/logout/').success(function() {
+            $scope.restrictedContent = [];
+            $.cookie('key', null);
+            $http.defaults.headers.common['Authorization'] = null;
+            }).error(function() {
+            // This should happen after the .post call either way.
+            $.cookie('key', null);
+            $http.defaults.headers.common['Authorization'] = null;
+            });
+        };
+
+
+    $scope.submit = function(file) {
+        console.log('inside submit', file)
+      if (file) {
+        $scope.upload(file);
+      }
+    };
+
+  
+    // upload on file select or drop
+    $scope.upload = function (file) {
+        console.log('upload is called ', file);
+        Upload.upload({
+            url: 'http://127.0.0.1:8000/upload-video',
+            method: 'POST',
+            data: {'tim':'tom', 'docfile':file},
+
+        })
+
+        // Upload.http({
+        //       url: 'http://127.0.0.1:8000/upload-video',
+        //       headers : {
+        //         'Content-Type': file.type
+        //       },
+        //       data: file
+        //     })
+
+        .then(function (resp) {
+            console.log('Success ', resp);
+
+        }, function (resp) {
+            console.log('Error status: ' + resp.status);
+        }, function (evt) {
+            // var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+            // console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+        });
+    };
 }])
 
 myApp.run(function($rootScope){
     $rootScope.$on('$stateChangeSuccess', function() {
        document.body.scrollTop = document.documentElement.scrollTop = 0;
     });
+});
+
+
+myApp.config(function($mdThemingProvider) {
+  var customBlueMap =       $mdThemingProvider.extendPalette('light-blue', {
+    'contrastDefaultColor': 'light',
+    'contrastDarkColors': ['50'],
+    '50': 'ffffff'
+  });
+  $mdThemingProvider.definePalette('customBlue', customBlueMap);
+  $mdThemingProvider.theme('default')
+    .primaryPalette('customBlue', {
+      'default': '500',
+      'hue-1': '50'
+    })
+    .accentPalette('pink');
+  $mdThemingProvider.theme('input', 'default')
+        .primaryPalette('grey')
 });
 
 myApp.constant('API_SERVER', 'http://127.0.0.1:8000/');
