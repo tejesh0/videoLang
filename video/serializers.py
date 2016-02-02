@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from video.models import Video
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -21,3 +22,8 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+
+class VideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video

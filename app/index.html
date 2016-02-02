@@ -78,7 +78,8 @@
             </md-list>
         </md-sidenav>
 
-        <div  flex id="content">
+        <div  flex id="content" >
+            {{config}}
             <md-content layout="column" flex class="md-padding">
                 <videogular vg-theme="config.theme">
                     <vg-media vg-src="config.sources"
@@ -99,19 +100,8 @@
                     </vg-controls>
                     <vg-overlay-play></vg-overlay-play>
                     <vg-buffering></vg-buffering>
-                    <vg-poster vg-url='controller.config.plugins.poster'></vg-poster>
+                    <vg-poster vg-url='config.plugins.poster'></vg-poster>
                 </videogular>
-            </md-content>
-            <md-content layout layout-wrap layout-padding layout-align="center">
-                <md-card flex class="card">
-                    <img ng-src="{{photo.path}}">
-                </md-card>
-                <md-card flex class="card">
-                    <img ng-src="{{photo.path}}">
-                </md-card>
-                <md-card flex class="card">
-                    <img ng-src="{{photo.path}}">
-                </md-card>
             </md-content>
         </div>
     </div>

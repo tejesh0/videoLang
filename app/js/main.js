@@ -13,8 +13,6 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locatio
                     $state.go('signup');
                 }
 
-
-
             }
         })
         .state('signup', {
@@ -33,26 +31,39 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$locatio
 
 myApp.controller('HomeCtrl', ['$scope', '$http', 'Upload', '$window', '$mdSidenav', '$sce', function($scope, $http, Upload, $window, $mdSidenav, $sce){
 
-    $scope.config = {
-                    sources: [
-                        {src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.mp4"), type: "video/mp4"},
-                        {src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.webm"), type: "video/webm"},
-                        {src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.ogg"), type: "video/ogg"}
-                    ],
-                    tracks: [
-                        {
-                            src: "http://www.videogular.com/assets/subs/pale-blue-dot.vtt",
-                            kind: "subtitles",
-                            srclang: "en",
-                            label: "English",
-                            default: ""
-                        }
-                    ],
-                    theme: "../bower_components/videogular-themes-default/videogular.css",
-                    plugins: {
-                        poster: "http://www.videogular.com/assets/images/videogular.png"
+    $scope.config_list = [];
+
+    $http.get('http://127.0.0.1:8000/api/get-videos')
+        .success(function(data){
+            
+            // data['results'].forEach(function(value, i){
+            //     console.log(value.video_file);
+            //     $scope.config.sources.push({src: $sce.trustAsResourceUrl(value.video_file), type: "video/mp4"});
+            //     })
+            for(i=0;i<data.results.length;i++){
+                config = {};
+                config['sources'] = {src: $sce.trustAsResourceUrl(data.results[i].video_file), type: "video/mp4"};
+                config['tracks'] = [
+                    {
+                        src: "http://www.videogular.com/assets/subs/pale-blue-dot.vtt",
+                        kind: "subtitles",
+                        srclang: "en",
+                        label: "English",
+                        default: ""
                     }
+                ];
+                config['theme'] = "bower_components/videogular-themes-default/videogular.css";
+                config['plugins'] = {
+                    poster: "http://www.videogular.com/assets/images/videogular.png"
                 };
+                console.log(config);    
+                $scope.config_list.push(config);
+            }
+                console.log($scope.config_list);
+            })
+
+    
+
 
     $scope.toggleSidenav = function(menuId) {
         $mdSidenav(menuId).toggle();
